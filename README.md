@@ -64,16 +64,6 @@ resource "aws_key_pair" "deployer_key" {
 }
 
 
-EC2 Instance Setup
-Creates a t3.large EC2 instance with:
-
-Jenkins (via script.sh)
-
-Docker (added to jenkins user)
-
-Trivy (security scanner)
-
-SonarQube (running in Docker)
 
 
 resource "aws_instance" "web" {
@@ -94,8 +84,80 @@ resource "aws_instance" "web" {
   }
 }
 
+📤 Terraform Outputs (output.tf)
 
-User Data Script (script.sh)
-This script runs on EC2 launch and performs:
+output "instance_public_ip" {
+  description = "Public IP address of the EC2 instance"
+  value       = aws_instance.web.public_ip
+}
+
+output "instance_private_ip" {
+  description = "Private IP address of the EC2 instance"
+  value       = aws_instance.web.private_ip
+}
+
+🧭 Provider Configuration (provider.tf)
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = "eu-north-1"
+}
+
+
+🚀 How to Deploy
+
+
+# Clone the repository
+git clone https://github.com/yourusername/terraform-aws-jenkins.git
+cd terraform-aws-jenkins
+
+# Initialize Terraform
+terraform init
+
+# Validate and apply
+terraform apply
+
+
+
+📬 Sample Output
+
+Apply complete! Resources: 7 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+instance_public_ip = "13.53.xxx.xxx"
+instance_private_ip = "10.0.1.xxx"
+
+
+🧹 Cleanup
+To destroy all created infrastructure:
+
+
+terraform destroy
+
+
+📌 Notes
+Update AMI ID if outdated.
+
+Always restrict Security Group rules in production.
+
+Jenkins password is located at: /var/lib/jenkins/secrets/initialAdminPassword
+
+🤝 Contributing
+Pull requests and suggestions are welcome!
+
+📜 License
+MIT © [Rohit jain]
+
+
+
 
 
